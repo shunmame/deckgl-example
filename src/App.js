@@ -46,14 +46,21 @@ import { AmbientLight, PointLight, LightingEffect } from '@deck.gl/core';
 import DeckGL from '@deck.gl/react';
 import { PolygonLayer } from '@deck.gl/layers';
 import { TripsLayer } from '@deck.gl/geo-layers';
+import TripsData  from "./json_data/岡山駅.json"
 
-const MAPBOX_TOKEN = ""
+const MAPBOX_TOKEN = "pk.eyJ1Ijoic2h1bm1hbWUiLCJhIjoiY2tzemU4MmppMnM4bTJubzNzMGdubXV6biJ9.nxgv9JC8KMgnZQH1MpI6gA"
 
 // Source data CSV
+// const DATA_URL = {
+//   BUILDINGS:
+//     'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json', // eslint-disable-line
+//   TRIPS: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json' // eslint-disable-line
+// };
+
 const DATA_URL = {
   BUILDINGS:
     'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/buildings.json', // eslint-disable-line
-  TRIPS: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/trips/trips-v7.json' // eslint-disable-line
+  TRIPS: TripsData // eslint-disable-line
 };
 
 const ambientLight = new AmbientLight({
@@ -84,10 +91,18 @@ const DEFAULT_THEME = {
   effects: [lightingEffect]
 };
 
+// const INITIAL_VIEW_STATE = {
+//   longitude: -74.005650,
+//   latitude: 40.712087,
+//   zoom: 13,
+//   pitch: 45,
+//   bearing: 0
+// };
+
 const INITIAL_VIEW_STATE = {
-  longitude: -74,
-  latitude: 40.72,
-  zoom: 13,
+  longitude: 133.9175443,
+  latitude: 34.6461528,
+  zoom: 10,
   pitch: 45,
   bearing: 0
 };
@@ -99,13 +114,22 @@ const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.72], [-74.0, 40.7
 export default function App({
   buildings = DATA_URL.BUILDINGS,
   trips = DATA_URL.TRIPS,
-  trailLength = 180,
+  trailLength = 10,
   initialViewState = INITIAL_VIEW_STATE,
   mapStyle = MAP_STYLE,
   theme = DEFAULT_THEME,
-  loopLength = 1800, // unit corresponds to the timestamp in source data
-  animationSpeed = 10
+  loopLength = 7200, // unit corresponds to the timestamp in source data
+  animationSpeed = 1
 }) {
+
+  // const timestamps = trips.reduce(
+  //   (ts, trip) => ts.concat(trip.timestamps),
+  //   []
+  // );
+  // loopLength = Math.max(...timestamps) + 50;
+  // console.log(Math.max(...timestamps))
+  // console.log(Math.min(...timestamps))
+
   const [time, setTime] = useState(0);
   const [animation] = useState({});
 
@@ -140,7 +164,7 @@ export default function App({
       opacity: 0.3,
       widthMinPixels: 2,
       rounded: true,
-      trailLength,
+      trailLength: trailLength,
       currentTime: time,
 
       shadowEnabled: false
@@ -165,7 +189,11 @@ export default function App({
       initialViewState={initialViewState}
       controller={true}
     >
-      <StaticMap reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} mapboxApiAccessToken={MAPBOX_TOKEN} />
+      <StaticMap reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} mapboxApiAccessToken={MAPBOX_TOKEN}>
+        <div style={{ margin: "0.5rem", fontFamily: "monospace", fontSize: "18px", color: "white" }}>
+          Current Time: { parseInt(time) }
+        </div>
+      </StaticMap>
     </DeckGL>
   );
 }
