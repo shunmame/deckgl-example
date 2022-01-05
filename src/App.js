@@ -46,9 +46,9 @@ import { AmbientLight, PointLight, LightingEffect } from '@deck.gl/core';
 import DeckGL from '@deck.gl/react';
 import { PolygonLayer } from '@deck.gl/layers';
 import { TripsLayer } from '@deck.gl/geo-layers';
-import TripsData  from "./json_data/岡山駅.json"
+import TripsData  from "./dentetsu.json"
 
-const MAPBOX_TOKEN = ""
+const MAPBOX_TOKEN = "*****"
 
 // Source data CSV
 // const DATA_URL = {
@@ -100,10 +100,10 @@ const DEFAULT_THEME = {
 // };
 
 const INITIAL_VIEW_STATE = {
-  longitude: 133.9175443,
-  latitude: 34.6461528,
-  zoom: 10,
-  pitch: 45,
+  longitude: 130.7134138,
+  latitude: 32.8455853,
+  zoom: 12,
+  pitch: 0,
   bearing: 0
 };
 
@@ -112,14 +112,13 @@ const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-styl
 const landCover = [[[-74.0, 40.7], [-74.02, 40.7], [-74.02, 40.72], [-74.0, 40.72]]];
 
 export default function App({
-  buildings = DATA_URL.BUILDINGS,
   trips = DATA_URL.TRIPS,
-  trailLength = 10,
+  trailLength = 30,
   initialViewState = INITIAL_VIEW_STATE,
   mapStyle = MAP_STYLE,
   theme = DEFAULT_THEME,
-  loopLength = 7200, // unit corresponds to the timestamp in source data
-  animationSpeed = 1
+  loopLength = 90170, // unit corresponds to the timestamp in source data
+  animationSpeed = 10
 }) {
 
   // const timestamps = trips.reduce(
@@ -130,7 +129,7 @@ export default function App({
   // console.log(Math.max(...timestamps))
   // console.log(Math.min(...timestamps))
 
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(3600*4);
   const [animation] = useState({});
 
   const animate = () => {
@@ -191,7 +190,7 @@ export default function App({
     >
       <StaticMap reuseMaps mapStyle={mapStyle} preventStyleDiffing={true} mapboxApiAccessToken={MAPBOX_TOKEN}>
         <div style={{ margin: "0.5rem", fontFamily: "monospace", fontSize: "18px", color: "white" }}>
-          Current Time: { parseInt(time) }
+          Current Time: { Math.floor(time/3600) }時{Math.floor((time%3600)/60)}分
         </div>
       </StaticMap>
     </DeckGL>
